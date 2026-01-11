@@ -1,0 +1,39 @@
+name: Publish latest docker images
+
+on:
+  schedule:
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Publish neovim image
+        uses: elgohr/Publish-Docker-Github-Action@v5
+        with:
+          name: tumbleowlee/neovim
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          snapshot: true
+          dockerfile: ./alpine/neovim.Dockerfile
+          tags: "latest"
+          
+      - name: Publish c-lang image
+        uses: elgohr/Publish-Docker-Github-Action@v5
+        with:
+          name: tumbleowlee/c-lang
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          snapshot: true
+          dockerfile: ./alpine/c-lang.Dockerfile
+          tags: "latest"
+        
